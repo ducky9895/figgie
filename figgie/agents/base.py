@@ -1,7 +1,6 @@
 class BaseAgent:
-    def __init__(self, player_id):
-        self.player_id = player_id
+    def __init__(self, name):
+        self.name = name
 
-    def choose_action(self, game_state):
-        # Placeholder for agent's action decision logic
+    def decide_action(self, board, order_book):
         pass

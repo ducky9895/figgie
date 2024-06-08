@@ -6,11 +6,11 @@ class Board:
         assert num_players in [4, 5], "Number of players must be 4 or 5"
 
         self.pot = 200
-        self.cards = self.initialize_cards()
         self.initialize_players(num_players, player_ids)
-        self.hands = self.deal_cards()
         self.funds = {player : 200 for player in self.players}
-        print(self.hands)
+
+        self.cards = None
+        self.hands = None
 
     def initialize_cards(self):
         suits = ['Diamonds', 'Hearts', 'Clubs', 'Spades']
@@ -53,7 +53,7 @@ class Board:
 
         score = {player: 10 * goal_suit_counts[player] + self.funds[player] for player in self.hands}
         pot_share = self.pot // len(winners)
-        for player in self.winners:
+        for player in winners:
             score[player] += pot_share
             
         return winners, max_goal_cards, score
@@ -69,8 +69,8 @@ class OrderBook:
     def place_bid(self, player, suit, price):
         if price < self.board.funds[player]:
             current_Ask = self.Ask[suit]
-            if price >= current_Ask['price']:
-                self.make_trade(suit,current_Ask['price'],player,current_Ask['player']) #buyer, seller
+            if current_Ask and price >= current_Ask['price']:
+                self.make_trade(suit, current_Ask['price'], player, current_Ask['player']) # buyer, seller
             current_Bid = self.Bid[suit]
             if current_Bid is None or price > current_Bid['price']:
                 self.Bid[suit] = {'player': player, 'price': price}
@@ -78,15 +78,15 @@ class OrderBook:
             print(f"Failed to place bid: {player} lacks sufficient funds.")
 
     def place_ask(self, player, suit, price):
-        if self.board.hands[player][suit] >= 1: 
+        if self.board.hands[player][suit] >= 1:
             current_Bid = self.Bid[suit]
-            if price <= current_Bid['price']:
-                self.make_trade(suit,current_Bid['price'],current_Bid['player'],player)
+            if current_Bid and price <= current_Bid['price']:
+                self.make_trade(suit, current_Bid['price'], current_Bid['player'], player)
             current_Ask = self.Ask[suit]
             if current_Ask is None or price < current_Ask['price']:
                 self.Ask[suit] = {'player': player, 'price': price}
         else:
-            print(f"Failed to place bid: {player} lacks sufficient cards.")
+            print(f"Failed to place ask: {player} lacks sufficient cards.")
 
     def make_trade(self, suit, price, buyer, seller):
         print(f"Trade executed between {buyer} and {seller} for {suit} at {price}")

@@ -1,0 +1,12 @@
+{
+    "num_players": 4,
+    "num_rounds": 2,
+    "trading_period": 20,
+    "player_ids": ["Player1", "Player2", "Player3", "Player4"],
+    "agents": {
+        "Player1": "DuckyAgent",
+        "Player2": "RandomAgent",
+        "Player3": "DuckyAgent",
+        "Player4": "RandomAgent"
+    }
+}
